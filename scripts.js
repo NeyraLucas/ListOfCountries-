@@ -99,14 +99,22 @@ function starData(countriesData){
         
     }
 
-    //table.innerHTML = tr;
+    let options = {
+        numberPerPage:5, 
+        goBar:true, 
+        pageCounter:true
+    };
 
-    //console.log(countries);
+    let filterOptions = {
+        el:'#searchBox'
+    };
 
+    paginate.init('.table',options);
+    paginate.init('.table',options,filterOptions);
 }
 
 
-function showWiki(name){
+function dataWiki(name){
     nombre = name;
     let info;
     const urlWiki = `https://en.wikipedia.org/api/rest_v1/page/summary/${nombre}`;
@@ -148,7 +156,7 @@ function ShowInfo(e){
     const pais = e.target.parentElement.id;
     console.log(pais);
 
-    showWiki(pais);
+    dataWiki(pais);
 
 }
 //showWiki("mexico");
