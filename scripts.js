@@ -8,7 +8,10 @@ let nombre;
 const paises=[];
 const borderTable = document.getElementById("td_borders");//borders
 
+//btn para ver borders
 btnBorder.addEventListener("click", eventBorders);
+//evento para mostrar info de la 2da tabla al dar click
+borderTable.addEventListener("click", verBorders);
 
 fetch(url)
   .then((res) => res.json())
@@ -72,21 +75,42 @@ function starData(countriesData) {
   //tableBorder.showBorders(borders, countries);
 
 }
-
+let map;
 //get Data wiki
 function dataWiki(name) {
   nombre = name;
   let info;
+  //peticion 
   const urlWiki = `https://en.wikipedia.org/api/rest_v1/page/summary/${nombre}`;
   fetch(urlWiki)
     .then((res) => res.json())
     .then((data) => {
       console.log(data);
+      
+      // info += maps;
+      //mapa2.__gm.Ea.id = 'bootbox-body';
+      //console.log(mapa2);
+      //info = `${mapa2}`;
+      /* let map;
+      map = new google.maps.Map(document.querySelector(".bootbox-body"), {
+        center: { lat: 19.4978, lng: -99.1269 },
+        zoom: 13,
+      }); */
+     // const m = document.createElement('div');
+      //m.setAttribute('class','noc');
 
-      info += `${data.extract_html}`;
-
-      bootbox.alert(data.extract, function () {
-        console.log("Alert Callback");
+      //info = `${data.extract_html}`;
+      //info += `${m}`;
+      info = `
+      <p>
+      ${data.extract_html}
+      </p>
+      <div class="mapaP">
+      </div>
+      `;
+      //initMap();
+      bootbox.alert(`${info}`, function () {
+        //initMap();
       });
     })
     .catch((err) => console.log("Error:", err));
@@ -107,37 +131,24 @@ function eventBorders() {
 
 function viewBorder(data) {
   const bor = data;
-  
   let option = "";
-  //console.log(data);
   const testPais = data.map(function (count) {
     return count.borders;
   });
-  console.log('borders: ' + testPais);
+  //console.log('borders: ' + testPais);
   for (let i = 0; i < bor.length; i++) {
     
     if (bor.length === undefined) {
       i++;
     } else {
-      //console.log(bor[i].name.common);
       for (let j = 0; j < data[i].borders.length; j++) {
-          //lenguajes(data[i].borders[j]);
-          //let lenguages = lenguajes(data[i].borders[j]);
-          //console.log(lenguages);
-          //data[i].translations.spa.official
-          //paises.push(`https://restcountries.com/v3.1/alpha/${data[i].borders[j]}`);
-          
-         //paises = data[i].borders[j]; 
-          //paises.push(p);
-         // console.log(paises);
-        //////////////////
-        
+        //peticion para acceder al nombre
         fetch(`https://restcountries.com/v3.1/alpha/${testPais[i][j]}`)
         .then(resp => resp.json())
         .then(datos =>{
          
           option = `
-          <tr>
+          <tr id='${datos[i].name.common}'>
           <th>${bor[i].name.common}</th>
           <th>${data[i].borders[j]}</th>
           <th>${datos[0].translations.spa.official}</th>
@@ -146,96 +157,11 @@ function viewBorder(data) {
           `;
           borderTable.innerHTML += option;
         });
-         /////////////
-         /*  option = `
-          <tr>
-          <th>${bor[i].name.common}</th>
-          <th>${data[i].borders[j]}</th>
-          
-          </tr>
-          
-          `; */
-          //<th>${data[i].translations.spa.official}</th>
           
       } //end for
     }
   }
-
-  /* const testMap = companies.map(function(company){
-    return `${company.name} [${company.start} - ${company.end}]`;
-}) */
-///////////////////////////
-/*   const testPais = data.map(function (count) {
-    return count.borders;
-  });
-  //let account = '';
-  console.log(testPais);
-  for(let i=0; i<testPais.length; i++){
-    console.log('pais: ' + testPais[i]);
-    for(let j=0; j<testPais[i].length; j++){
-      console.log('pais2: ' + testPais[i][j]);
-      let account = document.createElement('th');
-      //account.push(`https://restcountries.com/v3.1/alpha/${testPais[i][j]}`);
-      fetch(`https://restcountries.com/v3.1/alpha/${testPais[i][j]}`)
-      .then(resp => resp.json())
-      .then(data =>{
-        console.log(data[0].translations.spa.official);
-        account.innerHTML =`
-
-        <th>${data[0].translations.spa.official}</th>
-
-        `
-        borderTable.appendChild(account);
-      });
-
-    }
-  } */
-  ///////////////////////////
-  //console.log(account);
-  
-
-  //fetching(testPais);
-  //const paisesCopy = paises;
-  //console.log(paises[16]);
-
 }
-
-//leng
-//https://restcountries.com/v3.1/alpha/{code}
-/* function lenguajes(len) {
-  fetch(`https://restcountries.com/v3.1/alpha/${len}`)
-    .then((res) => res.json())
-    .then((data) => () => {
-      console.log(data);
-    })
-    .catch((err) => console.log("Error:", err));
-} */
-const getDiv = document.getElementById("prueba");
-// función que implementa un wait con promesas
-const wait = (ms) => new Promise((r, j) => setTimeout(r, ms));
-
-// función que emula un proceso asíncrono
-const fetchUrl = async (url) => {
-  await wait(0);
-  //let options= "";
-  return fetch(url)
-    .then((resp) => resp.json())
-    .then((data) => {
-        console.log(data[0].translations.spa.official);
-       // options =`<p>${data[0].translations.spa.official}</p>`
-        //getDiv.innerHTML += options;
-    });
-    
-    
-};
-
-const fetching = async (arr) => {
-  for (const url of arr) {
-    const data = await fetchUrl(url);
-    //console.log(data);
-  }
-};
-
 
 //filtro y paginación
 function filters() {
@@ -256,69 +182,30 @@ function filters() {
 }
 
 //evento onclick para la table
-
-$(document).on("click", "tr", function (e) {
+$('#table').on("click", "tr", function (e) {
   let pais = $(this).find("td:eq(0)").text();
   dataWiki(pais);
+  initMap();
+}); 
+
+
+//evento para mostrar tabla 2
+function verBorders(e) {
+    let paises = e.path[1].id;
+    dataWiki(paises);
+}
+
+//let map;
+//let mapa2;
+//let maps= document.createElement('div');
+//maps.setAttribute('id','map');
+function initMap() {
+map = new google.maps.Map(document. querySelector('.mapaP'), {
+    center: { lat: 19.4978, lng: -99.1269 },
+    zoom: 13,
 });
+}
 
-//get table
-const tableBorder = {
-  showBorders: (arr, countries) => {
-    const tableB = document.getElementById("td_borders");
-    const bord = [];
-    let otp = "";
-    //let filt = {border: ''};
-    let filt = [];
-    arr.forEach((a) => {
-      bord.push(a.innerHTML);
-    });
-
-    //filtrar
-    for (let i = 0; i < bord.length; i++) {
-      for (let j = 0; j < countries.length; j++) {
-        if (bord[i] == countries[j].name.common) {
-          filt.push(countries[j].borders);
-          //filt.border=countries[j].borders;
-          //console.log(filt);
-        }
-      }
-    }
-
-    //code
-    /* for(let i=0; i<filt.length; i++){
-      for(let j=0; j<filt[i].length; j++){
-        searchCode.code(filt[i][j]);
-        console.log()
-      }
-    } */
-
-    //console.log('soy: filt ' + filt.length +filt[0].length);
-
-    //printBorders.print(bord);
-    //console.log(bord);
-    for (let i = 0; i < bord.length; i++) {
-      otp = `
-        <tr>
-        <td> ${bord[i]} </td>
-        <td> ${filt[i]} </td>
-        </tr>
-        `;
-      tableB.innerHTML += otp;
-    }
-
-    //console.log(filt);
-  },
-  deleteBorder: () => {
-    const tableB = document.getElementById("td_borders");
-    tableB.innerHTML = "";
-  },
-};
-
-//search code
-const searchCode = {
-  code: (code) => {
-    console.log("Es el codigo: " + code);
-  },
-};
-
+/* $(document).on('noc', function () {
+    initMap();
+}) */
