@@ -79,39 +79,25 @@ let map;
 //get Data wiki
 function dataWiki(name) {
   nombre = name;
-  let info;
+  let lat='';
+  let lon='';
   //peticion 
   const urlWiki = `https://en.wikipedia.org/api/rest_v1/page/summary/${nombre}`;
   fetch(urlWiki)
     .then((res) => res.json())
     .then((data) => {
-      console.log(data);
-      
-      // info += maps;
-      //mapa2.__gm.Ea.id = 'bootbox-body';
-      //console.log(mapa2);
-      //info = `${mapa2}`;
-      /* let map;
-      map = new google.maps.Map(document.querySelector(".bootbox-body"), {
-        center: { lat: 19.4978, lng: -99.1269 },
-        zoom: 13,
-      }); */
-     // const m = document.createElement('div');
-      //m.setAttribute('class','noc');
+      let info = document.createElement('div');
+      lat = data.coordinates.lat;
+      lon = data.coordinates.lon;
 
-      //info = `${data.extract_html}`;
-      //info += `${m}`;
-      info = `
-      <p>
-      ${data.extract_html}
-      </p>
-      <div class="mapaP">
-      </div>
-      `;
-      //initMap();
-      bootbox.alert(`${info}`, function () {
-        //initMap();
+      info = `<div id="modalMap">${data.extract_html}</div> <h5>Mapa: </h5> <div class="mapaP"></div>`;
+
+      bootbox.alert({
+        message: info,
+        backdrop: true,
       });
+
+      initMap(lat,lon);
     })
     .catch((err) => console.log("Error:", err));
 }
@@ -185,7 +171,7 @@ function filters() {
 $('#table').on("click", "tr", function (e) {
   let pais = $(this).find("td:eq(0)").text();
   dataWiki(pais);
-  initMap();
+  
 }); 
 
 
@@ -195,17 +181,9 @@ function verBorders(e) {
     dataWiki(paises);
 }
 
-//let map;
-//let mapa2;
-//let maps= document.createElement('div');
-//maps.setAttribute('id','map');
-function initMap() {
+function initMap(lat,lon) {
 map = new google.maps.Map(document. querySelector('.mapaP'), {
-    center: { lat: 19.4978, lng: -99.1269 },
+    center: { lat: lat, lng: lon },
     zoom: 13,
 });
 }
-
-/* $(document).on('noc', function () {
-    initMap();
-}) */

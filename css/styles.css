@@ -3,7 +3,12 @@
     height: 400px;
 }
 
-.noc{
+.mapaP{
     width: 400px;
     height: 400px;
+    
+}
+
+.removeMap{
+    display: none;
 }
