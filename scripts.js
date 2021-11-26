@@ -1,6 +1,7 @@
 const btnBorder = document.getElementById("btnBorders");
 const borderTable = document.getElementById("td_borders"); //borders
 init();
+let l=[];
 function init() {
   //btn para ver borders
   btnBorder.addEventListener("click", eventBorders);
@@ -24,16 +25,16 @@ function starData(countriesData) {
     const nameB = b.name.common.toLowerCase();
     return nameA < nameB ? -1 : 1;
   });
-
   //iterar datos
   for (let i = 0; i < countries.length; i++) {
     let leng = "";
     let options = "";
     //obtenemos los datos de lenguajes
     if (typeof countries[i].languages === "object") {
+      //countries[i].languages.sort()
       for (let j in countries[i].languages) {
         const le = countries[i].languages[j];
-        leng += `${le} `;
+        leng += `<li>${le}</li>`;
       }
     }
 
@@ -42,7 +43,9 @@ function starData(countriesData) {
         <td class="check">${countries[i].name.common}</td>
         <td> ${countries[i].capital} </td>
         <td> ${countries[i].region} </td>
-        <td> ${leng} </td>
+        <td>
+        <button onclick="showLenguage('${leng}')" class="btn btn-info">Language</button>
+        </td>
         <td> ${countries[i].population} </td>
         <td> <img class="img-fluid" width="100px" src=" ${countries[i].flags.svg} " > </td>
         </tr>
@@ -129,16 +132,17 @@ function filters() {
     hasPagination: true,
   };
 
-  let filterOptions = {
+  /* let filterOptions = {
     el: "#searchBox",
-  };
+  }; */
 
-  paginate.init(".table_countries", options, filterOptions);
+  paginate.init(".table_countries", options);
 }
 //evento onclick para la table
 $("#table").on("click", "tr", function (e) {
   let pais = $(this).find("td:eq(0)").text();
   dataWiki(pais);
+  //showLenguage(l);
 });
 //evento para mostrar tabla 2
 function verBorders(e) {
@@ -152,4 +156,16 @@ function initMap(lat, lon) {
     center: { lat: lat, lng: lon },
     zoom: 13,
   });
+}
+
+//show lenguajes modal
+function showLenguage(name) { 
+  bootbox.alert(`Lenguages:
+  <div>
+  <ul>
+  ${name}
+  </ul>
+  </div>
+  `);
+  //console.log(arr);
 }
