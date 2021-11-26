@@ -1,49 +1,34 @@
-const url = `https://restcountries.com/v3.1/all`;
-const table = document.getElementById("td_body");
-const table2 = document.getElementById("table");
-const search = document.getElementById("searchBox");
 const btnBorder = document.getElementById("btnBorders");
-let countries;
-let nombre;
-const paises=[];
-const borderTable = document.getElementById("td_borders");//borders
+const borderTable = document.getElementById("td_borders"); //borders
+init();
+function init() {
+  //btn para ver borders
+  btnBorder.addEventListener("click", eventBorders);
+  //evento para mostrar info de la 2da tabla al dar click
+  borderTable.addEventListener("click", verBorders);
 
-//btn para ver borders
-btnBorder.addEventListener("click", eventBorders);
-//evento para mostrar info de la 2da tabla al dar click
-borderTable.addEventListener("click", verBorders);
-
-fetch(url)
-  .then((res) => res.json())
-  .then((data) => starData(data))
-  .catch((err) => console.log("Error:", err));
-
+  const url = `https://restcountries.com/v3.1/all`;
+  fetch(url)
+    .then((res) => res.json())
+    .then((data) => starData(data))
+    .catch((err) => console.log("Error:", err));
+}
+//show table start
 function starData(countriesData) {
+  let countries;
   countries = countriesData;
-
+  const table = document.getElementById("td_body");
   //ordenar ascendente
   countries.sort((a, b) => {
     const nameA = a.name.common.toLowerCase();
     const nameB = b.name.common.toLowerCase();
-
-    if (nameA < nameB) {
-      return -1;
-    }
-
-    if (nameA > nameB) {
-      return 1;
-    }
-
-    return 0;
+    return nameA < nameB ? -1 : 1;
   });
-
-  //console.log(countries);
 
   //iterar datos
   for (let i = 0; i < countries.length; i++) {
     let leng = "";
     let options = "";
-
     //obtenemos los datos de lenguajes
     if (typeof countries[i].languages === "object") {
       for (let j in countries[i].languages) {
@@ -65,74 +50,61 @@ function starData(countriesData) {
 
     table.innerHTML += options;
   }
-
-  //console.log(countries);
-
   filters();
-  //const borders = document.querySelectorAll(".check");
-  // console.log(borders);
-  //tableBorder.deleteBorder();
-  //tableBorder.showBorders(borders, countries);
-
 }
-let map;
 //get Data wiki
 function dataWiki(name) {
+  let nombre;
   nombre = name;
-  let lat='';
-  let lon='';
-  //peticion 
+  let lat = "";
+  let lon = "";
+  //peticion
   const urlWiki = `https://en.wikipedia.org/api/rest_v1/page/summary/${nombre}`;
   fetch(urlWiki)
     .then((res) => res.json())
     .then((data) => {
-      let info = document.createElement('div');
+      let info = document.createElement("div");
       lat = data.coordinates.lat;
       lon = data.coordinates.lon;
 
-      info = `<div id="modalMap">${data.extract_html}</div> <h5>Mapa: </h5> <div class="mapaP"></div>`;
+      info = `<div id="modalMap">${data.extract_html}</div> <h5>Mapa: </h5> <div class="mapaP container"></div>`;
 
       bootbox.alert({
         message: info,
         backdrop: true,
       });
-
-      initMap(lat,lon);
+      //mostrar mapa
+      initMap(lat, lon);
     })
     .catch((err) => console.log("Error:", err));
 }
-
 //event btn
 function eventBorders() {
   const borders = document.querySelectorAll(".check");
-  borderTable.innerHTML ='';
+  borderTable.innerHTML = "";
   for (let i = 0; i < borders.length; i++) {
     fetch(`https://restcountries.com/v3.1/name/${borders[i].outerText}`)
       .then((response) => response.json())
       .then((data) => viewBorder(data))
       .catch((err) => console.log("Error:", err));
   }
-  //console.log(borders[0]);
 }
-
+//show borders
 function viewBorder(data) {
   const bor = data;
   let option = "";
   const testPais = data.map(function (count) {
     return count.borders;
   });
-  //console.log('borders: ' + testPais);
+  
   for (let i = 0; i < bor.length; i++) {
     
-    if (bor.length === undefined) {
-      i++;
-    } else {
-      for (let j = 0; j < data[i].borders.length; j++) {
-        //peticion para acceder al nombre
-        fetch(`https://restcountries.com/v3.1/alpha/${testPais[i][j]}`)
-        .then(resp => resp.json())
-        .then(datos =>{
-         
+    for (let j = 0; j < data[i].borders.length; j++) {
+      
+      //peticion para acceder al nombre
+      fetch(`https://restcountries.com/v3.1/alpha/${testPais[i][j]}`)
+        .then((resp) => resp.json())
+        .then((datos) => {
           option = `
           <tr id='${datos[i].name.common}'>
           <th>${bor[i].name.common}</th>
@@ -143,12 +115,9 @@ function viewBorder(data) {
           `;
           borderTable.innerHTML += option;
         });
-          
-      } //end for
-    }
+    } //end for
   }
 }
-
 //filtro y paginación
 function filters() {
   let options = {
@@ -166,24 +135,21 @@ function filters() {
 
   paginate.init(".table_countries", options, filterOptions);
 }
-
 //evento onclick para la table
-$('#table').on("click", "tr", function (e) {
+$("#table").on("click", "tr", function (e) {
   let pais = $(this).find("td:eq(0)").text();
   dataWiki(pais);
-  
-}); 
-
-
+});
 //evento para mostrar tabla 2
 function verBorders(e) {
-    let paises = e.path[1].id;
-    dataWiki(paises);
+  let paises = e.path[1].id;
+  dataWiki(paises);
 }
-
-function initMap(lat,lon) {
-map = new google.maps.Map(document. querySelector('.mapaP'), {
+//renderizar mapa
+let map;
+function initMap(lat, lon) {
+  map = new google.maps.Map(document.querySelector(".mapaP"), {
     center: { lat: lat, lng: lon },
     zoom: 13,
-});
+  });
 }
