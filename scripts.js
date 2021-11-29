@@ -13,6 +13,7 @@ function init() {
     .then((res) => res.json())
     .then((data) => starData(data))
     .catch((err) => console.log("Error:", err));
+
 }
 //show table start
 function starData(countriesData) {
@@ -43,8 +44,8 @@ function starData(countriesData) {
         <td class="check">${countries[i].name.common}</td>
         <td> ${countries[i].capital} </td>
         <td> ${countries[i].region} </td>
-        <td>
-        <button onclick="showLenguage('${leng}')" class="btn btn-info">Language</button>
+        <td class="lan2">
+        <button onclick="showLenguage('${leng}')" class="btn btn-info lan">Language</button>
         </td>
         <td> ${countries[i].population} </td>
         <td> <img class="img-fluid" width="100px" src=" ${countries[i].flags.svg} " > </td>
@@ -53,7 +54,7 @@ function starData(countriesData) {
 
     table.innerHTML += options;
   }
-  filters();
+  //filters();
 }
 //get Data wiki
 function dataWiki(name) {
@@ -121,29 +122,20 @@ function viewBorder(data) {
     } //end for
   }
 }
-//filtro y paginación
-function filters() {
-  let options = {
-    numberPerPage: 5,
-    constNumberPerPage: 5,
-    numberOfPages: 0,
-    goBar: false,
-    pageCounter: true,
-    hasPagination: true,
-  };
 
-  /* let filterOptions = {
-    el: "#searchBox",
-  }; */
-
-  paginate.init(".table_countries", options);
-}
 //evento onclick para la table
-$("#table").on("click", "tr", function (e) {
+$("#td_body").on("click", "tr", function (e) {
+
   let pais = $(this).find("td:eq(0)").text();
-  dataWiki(pais);
-  //showLenguage(l);
+  let p = e.target.innerHTML;
+  if(p != 'Language'){
+    console.log("pais " + p);
+    dataWiki(pais);
+  }
+
 });
+ 
+
 //evento para mostrar tabla 2
 function verBorders(e) {
   let paises = e.path[1].id;
