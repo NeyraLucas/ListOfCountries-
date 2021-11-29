@@ -1,7 +1,7 @@
 const btnBorder = document.getElementById("btnBorders");
 const borderTable = document.getElementById("td_borders"); //borders
 init();
-let l=[];
+let l = [];
 function init() {
   //btn para ver borders
   btnBorder.addEventListener("click", eventBorders);
@@ -13,7 +13,6 @@ function init() {
     .then((res) => res.json())
     .then((data) => starData(data))
     .catch((err) => console.log("Error:", err));
-
 }
 //show table start
 function starData(countriesData) {
@@ -54,7 +53,7 @@ function starData(countriesData) {
 
     table.innerHTML += options;
   }
-  //filters();
+  
 }
 //get Data wiki
 function dataWiki(name) {
@@ -100,11 +99,9 @@ function viewBorder(data) {
   const testPais = data.map(function (count) {
     return count.borders;
   });
-  
+
   for (let i = 0; i < bor.length; i++) {
-    
     for (let j = 0; j < data[i].borders.length; j++) {
-      
       //peticion para acceder al nombre
       fetch(`https://restcountries.com/v3.1/alpha/${testPais[i][j]}`)
         .then((resp) => resp.json())
@@ -125,16 +122,13 @@ function viewBorder(data) {
 
 //evento onclick para la table
 $("#td_body").on("click", "tr", function (e) {
-
   let pais = $(this).find("td:eq(0)").text();
   let p = e.target.innerHTML;
-  if(p != 'Language'){
+  if (p != "Language") {
     console.log("pais " + p);
     dataWiki(pais);
   }
-
 });
- 
 
 //evento para mostrar tabla 2
 function verBorders(e) {
@@ -151,7 +145,7 @@ function initMap(lat, lon) {
 }
 
 //show lenguajes modal
-function showLenguage(name) { 
+function showLenguage(name) {
   bootbox.alert(`Lenguages:
   <div>
   <ul>
@@ -159,5 +153,4 @@ function showLenguage(name) {
   </ul>
   </div>
   `);
-  //console.log(arr);
 }
